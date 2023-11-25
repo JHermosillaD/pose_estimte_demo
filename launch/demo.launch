@@ -1,0 +1,20 @@
+<launch>
+  <!-- Creating dummy camera to base_link transformation-->
+  <node pkg="tf" type="static_transform_publisher" name="kinect_to_base_link" args="0 1 0 1.57 -1.57 0 kinect2_link base_link 1000" />
+
+  <!-- Publishing bounding boxes -->
+  <include file="$(find haar_cascade)/launch/detect_face.launch"/>
+  <include file="$(find hog)/launch/detect_body.launch"/>
+
+  <!-- Displaying bounding boxes -->
+  <param name="/hog_bbox_topic" type="string" value="/hog/bounding_box" />
+  <param name="/haar_bbox_topic" type="string" value="/haar/bounding_box" />
+  <node name="ShowDemo" pkg="pose_estimate_demo" type="show_demo" output="screen"/>
+
+  <!-- Estimating pedestrian position -->
+  <include file="$(find bbox_position)/launch/publish_bbox.launch"/>
+  
+  <!-- Displaying pedestrian marker --> 
+  <include file="$(find pedestrian_space)/launch/display_marker.launch"/>  
+  
+</launch>
